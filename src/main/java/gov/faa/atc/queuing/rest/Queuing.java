@@ -27,11 +27,11 @@ public class Queuing
     public String addPlaneToQueue(@RequestBody Aircraft plane)
     {
         queue.add(plane);
-        return "New queue size " + queue.size();
+        return "OK";
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public String removePlaneFromQueue()
+    @RequestMapping(value = "/", method = RequestMethod.DELETE, produces = {"application/JSON"})
+    public Aircraft removePlaneFromQueue()
     {
         Aircraft plane = null;
         for (Aircraft fromQ : queue) {
@@ -43,7 +43,7 @@ public class Queuing
             }
         }
         queue.remove(plane);
-        return "Removed from queue: " + plane;
+        return plane;
     }
 
     public static void main(String[] args)
