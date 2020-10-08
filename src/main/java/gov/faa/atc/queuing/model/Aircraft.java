@@ -1,8 +1,8 @@
 package gov.faa.atc.queuing.model;
 
-public class Aircraft
+public class Aircraft implements Comparable<Aircraft>
 {
-    public enum Priority
+    public enum Type
     {
         Emergency,
         VIP,
@@ -17,13 +17,13 @@ public class Aircraft
     };
 
     private String name;
-    private Priority priority;
+    private Type type;
     private Size size;
 
-    public Aircraft(String name, Priority priority, Size size)
+    public Aircraft(String name, Type type, Size size)
     {
         this.name = name;
-        this.priority = priority;
+        this.type = type;
         this.size = size;
     }
 
@@ -32,9 +32,9 @@ public class Aircraft
         return name;
     }
 
-    public Priority getPriority()
+    public Type getType()
     {
-        return priority;
+        return type;
     }
 
     public Size getSize()
@@ -42,13 +42,44 @@ public class Aircraft
         return size;
     }
 
+    /**
+     * Returns the comparative priority for dequeuing of this aircraft and another
+     */
+    public int compareTo(Aircraft other)
+    {
+        if (type != other.getType()) {
+            switch (type) {
+                case Emergency:
+                    return 1;
+                case VIP:
+                    if (other.getType() != Type.Emergency)
+                        return 1;
+                    else
+                        return -1;
+                case Passenger:
+                    if ((other.getType() != Type.Emergency) && (other.getType() != Type.VIP))
+                        return 1;
+                    else
+                        return -1;
+                default:
+                    return -1;
+            }
+        } else if (size != other.getSize()) {
+            if (size == Size.Large)
+                return 1;
+            else
+                return -1;
+        }
+        return 0;
+    }
+
     public String toString()
     {
         StringBuilder sb = new StringBuilder("Aircraft[");
         if (name != null)
             sb.append("name=" + name + " ");
-        if (priority != null)
-            sb.append("priority=" + priority + " ");
+        if (type != null)
+            sb.append("type=" + type + " ");
         if (size != null)
             sb.append("size=" + size + " ");
         sb.append("]");

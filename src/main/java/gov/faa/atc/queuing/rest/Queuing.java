@@ -26,7 +26,6 @@ public class Queuing
     @RequestMapping(value = "/", method = RequestMethod.POST /*, consumes = {"application/JSON"} */)
     public String addPlaneToQueue(@RequestBody Aircraft plane)
     {
-        // Aircraft plane = new Aircraft("Flight 288", Aircraft.Priority.VIP, Aircraft.Size.Small);
         queue.add(plane);
         return "New queue size " + queue.size();
     }
@@ -34,7 +33,16 @@ public class Queuing
     @RequestMapping(value = "/", method = RequestMethod.DELETE)
     public String removePlaneFromQueue()
     {
-        Aircraft plane = queue.remove(0); // remove plane at head of queue
+        Aircraft plane = null;
+        for (Aircraft fromQ : queue) {
+            if (plane == null) {
+                plane = fromQ;
+            } else {
+                if (plane.compareTo(fromQ) < 0)
+                    plane = fromQ;
+            }
+        }
+        queue.remove(plane);
         return "Removed from queue: " + plane;
     }
 
@@ -42,5 +50,4 @@ public class Queuing
     {
         SpringApplication.run(Queuing.class, args);
     }
-
 }
