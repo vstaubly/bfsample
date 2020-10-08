@@ -39,12 +39,14 @@ public class Queuing
     public List<Aircraft> listQueue()
     {
         List<Aircraft> combinedQueue = new ArrayList<Aircraft>();
-        for (String pri : priorityList) {
-            // in real version, list would likely be "paged" (with offset and count)
-            //    if (offset > 0), we would decrement offset by queue.size() and then only pull in count elements
-            List<Aircraft> queue = queuesByPriority.get(pri);
-            if ((queue != null) && (queue.size() > 0))
-                combinedQueue.addAll(queue);
+        synchronized (queuesByPriority) {
+            for (String pri : priorityList) {
+                // in real version, list would likely be "paged" (with offset and count)
+                //    if (offset > 0), we would decrement offset by queue.size() and then only pull in count elements
+                List<Aircraft> queue = queuesByPriority.get(pri);
+                if ((queue != null) && (queue.size() > 0))
+                    combinedQueue.addAll(queue);
+            }
         }
         return combinedQueue;
     }
@@ -53,8 +55,10 @@ public class Queuing
     public String addPlaneToQueue(@RequestBody Aircraft plane)
     {
         String pri = plane.getPriorityString();
-        List<Aircraft> queue = queuesByPriority.get(pri);
-        queue.add(plane);
+        synchronized (queuesByPriority) {
+            List<Aircraft> queue = queuesByPriority.get(pri);
+            queue.add(plane);
+        }
         return "OK";
     }
 
@@ -62,12 +66,14 @@ public class Queuing
     public Aircraft removePlaneFromQueue()
     {
         Aircraft plane = null;
-        for (String pri : priorityList) {
-            List<Aircraft> queue = queuesByPriority.get(pri);
-            if ((queue != null) && (queue.size() > 0)) {
-                plane = queue.get(0);
-                queue.remove(plane);
-                break;
+        synchronized (queuesByPriority) {
+            for (String pri : priorityList) {
+                List<Aircraft> queue = queuesByPriority.get(pri);
+                if ((queue != null) && (queue.size() > 0)) {
+                    plane = queue.get(0);
+                    queue.remove(plane);
+                    break;
+                }
             }
         }
         return plane;
