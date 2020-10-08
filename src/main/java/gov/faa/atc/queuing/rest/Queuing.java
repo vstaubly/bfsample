@@ -1,6 +1,7 @@
 package gov.faa.atc.queuing.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.boot.*;
@@ -15,17 +16,44 @@ import gov.faa.atc.queuing.model.Aircraft;
 @EnableAutoConfiguration
 public class Queuing
 {
-    List<Aircraft> queue = new ArrayList<Aircraft>();
+    public static final String[] priorityList = {
+        "Large Emergency",
+        "Small Emergency",
+        "Large VIP",
+        "Small VIP",
+        "Large Passenger",
+        "Small Passenger",
+        "Large Cargo",
+        "Small Cargo"
+    };
+    private HashMap<String, List<Aircraft>> queuesByPriority = new HashMap<String, List<Aircraft>>();
+
+    public Queuing()
+    {
+        for (String pri : priorityList) {
+            queuesByPriority.put(pri, new ArrayList<Aircraft>());
+        }
+    }
 
     @RequestMapping(value = "/", produces = {"application/JSON"})
     public List<Aircraft> listQueue()
     {
-        return queue;
+        List<Aircraft> combinedQueue = new ArrayList<Aircraft>();
+        for (String pri : priorityList) {
+            // in real version, list would likely be "paged" (with offset and count)
+            //    if (offset > 0), we would decrement offset by queue.size() and then only pull in count elements
+            List<Aircraft> queue = queuesByPriority.get(pri);
+            if ((queue != null) && (queue.size() > 0))
+                combinedQueue.addAll(queue);
+        }
+        return combinedQueue;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST /*, consumes = {"application/JSON"} */)
     public String addPlaneToQueue(@RequestBody Aircraft plane)
     {
+        String pri = plane.getPriorityString();
+        List<Aircraft> queue = queuesByPriority.get(pri);
         queue.add(plane);
         return "OK";
     }
@@ -34,15 +62,14 @@ public class Queuing
     public Aircraft removePlaneFromQueue()
     {
         Aircraft plane = null;
-        for (Aircraft fromQ : queue) {
-            if (plane == null) {
-                plane = fromQ;
-            } else {
-                if (plane.compareTo(fromQ) < 0)
-                    plane = fromQ;
+        for (String pri : priorityList) {
+            List<Aircraft> queue = queuesByPriority.get(pri);
+            if ((queue != null) && (queue.size() > 0)) {
+                plane = queue.get(0);
+                queue.remove(plane);
+                break;
             }
         }
-        queue.remove(plane);
         return plane;
     }
 

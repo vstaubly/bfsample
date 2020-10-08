@@ -73,6 +73,11 @@ public class Aircraft implements Comparable<Aircraft>
         return 0;
     }
 
+    public String getPriorityString()
+    {
+        return "" + size + " " + type;
+    }
+
     public String toString()
     {
         StringBuilder sb = new StringBuilder("Aircraft[");
