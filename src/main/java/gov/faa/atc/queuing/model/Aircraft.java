@@ -19,6 +19,7 @@ public class Aircraft implements Comparable<Aircraft>
     private String name;
     private Type type;
     private Size size;
+    private int priority;
 
     public Aircraft(String name, Type type, Size size)
     {
@@ -73,9 +74,15 @@ public class Aircraft implements Comparable<Aircraft>
         return 0;
     }
 
-    public String getPriorityString()
+    public String priorityString()
     {
         return "" + size + " " + type;
+    }
+
+    // this is computed externally based on set of priority rules
+    public void setPriority(int pri)
+    {
+        this.priority = priority;
     }
 
     public String toString()
@@ -83,6 +90,7 @@ public class Aircraft implements Comparable<Aircraft>
         StringBuilder sb = new StringBuilder("Aircraft[");
         if (name != null)
             sb.append("name=" + name + " ");
+        sb.append("pri=" + priority + " ");
         if (type != null)
             sb.append("type=" + type + " ");
         if (size != null)

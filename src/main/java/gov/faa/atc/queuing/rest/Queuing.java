@@ -27,11 +27,14 @@ public class Queuing
         "Small Cargo"
     };
     private HashMap<String, List<Aircraft>> queuesByPriority = new HashMap<String, List<Aircraft>>();
+    private HashMap<String, Integer> priorityByName = new HashMap<String, Integer>();
 
     public Queuing()
     {
-        for (String pri : priorityList) {
+        for (int i = 0; i < priorityList.length; i++) {
+            String pri = priorityList[i];
             queuesByPriority.put(pri, new ArrayList<Aircraft>());
+            priorityByName.put(pri, i);
         }
     }
 
@@ -54,7 +57,10 @@ public class Queuing
     @RequestMapping(value = "/", method = RequestMethod.POST /*, consumes = {"application/JSON"} */)
     public String addPlaneToQueue(@RequestBody Aircraft plane)
     {
-        String pri = plane.getPriorityString();
+        String pri = plane.priorityString();
+        Integer priNum = priorityByName.get(pri);
+        if (priNum != null)
+            plane.setPriority(priNum);
         synchronized (queuesByPriority) {
             List<Aircraft> queue = queuesByPriority.get(pri);
             queue.add(plane);
