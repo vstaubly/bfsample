@@ -63,7 +63,7 @@ public class Aircraft
     // this is computed externally based on set of priority rules
     public void setPriority(int pri)
     {
-        this.priority = priority;
+        this.priority = pri;
     }
 
     public void setId(Long id)

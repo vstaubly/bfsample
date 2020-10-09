@@ -21,7 +21,7 @@ public class AircraftRepository
         List<Aircraft> alist = new ArrayList<Aircraft>();
         try {
             Statement stmt = getConnection().createStatement();
-            String sql = "SELECT id, name, type, priority FROM aircraft ORDER BY priority, id";
+            String sql = "SELECT id, name, type, size, priority FROM aircraft ORDER BY priority, id";
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Long id = rs.getLong("id");
@@ -47,7 +47,7 @@ public class AircraftRepository
         Aircraft plane = null;
         try {
             Statement stmt = getConnection().createStatement();
-            String sql = "SELECT id, name, type, priority FROM aircraft ORDER BY priority, id LIMIT 1";
+            String sql = "SELECT id, name, type, size, priority FROM aircraft ORDER BY priority, id LIMIT 1";
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
                 Long id = rs.getLong("id");
@@ -86,7 +86,7 @@ public class AircraftRepository
             PreparedStatement pstatement = getConnection().prepareStatement(sql);
             pstatement.setString(1, plane.getName());
             pstatement.setString(2, "" + plane.getType());
-            pstatement.setString(3, "" + plane.getType());
+            pstatement.setString(3, "" + plane.getSize());
             pstatement.setInt(4, plane.getPriority());
             int rows = pstatement.executeUpdate();
         } catch (Exception e) {

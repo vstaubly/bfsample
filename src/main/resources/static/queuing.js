@@ -7,10 +7,10 @@ function loadTable()
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var listObj = JSON.parse(this.responseText);
-            var tableContents = "<tr><th>Name</th><th>Type</th><th>Size</th></tr>";
+            var tableContents = "<tr><th>ID</th><th>Name</th><th>Type</th><th>Size</th></tr>";
             if ((listObj) && (Array.isArray(listObj))) {
                 for (var i = 0; i < listObj.length; i++) {
-                    tableContents += "<tr><td>" + listObj[i].name + "</td><td>" + listObj[i].type +
+                    tableContents += "<tr><td>" + listObj[i].id + "</td><td>" + listObj[i].name + "</td><td>" + listObj[i].type +
                         "</td><td>" + listObj[i].size + "</td></tr>";
                 }
             }
@@ -44,7 +44,8 @@ function removeFromQueue()
             if (this.responseText != "") {
                 var planeObj = JSON.parse(this.responseText);
                 if (planeObj) {
-                    contents = "Name: " + planeObj.name + "<br/>Type: " + planeObj.type + "<br/>Size: " + planeObj.size;
+                    contents = "ID: " + planeObj.id + "<br/>Name: " + planeObj.name + "<br/>Type: " +
+                        planeObj.type + "<br/>Size: " + planeObj.size;
                 }
             }
             document.getElementById("next").innerHTML = contents;
