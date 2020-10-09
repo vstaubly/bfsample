@@ -17,6 +17,7 @@ public class Aircraft
         Large
     };
 
+    private Long id;
     private String name;
     private Type type;
     private Size size;
@@ -27,6 +28,11 @@ public class Aircraft
         this.name = name;
         this.type = type;
         this.size = size;
+    }
+
+    public Long getId()
+    {
+        return id;
     }
 
     public String getName()
@@ -44,6 +50,11 @@ public class Aircraft
         return size;
     }
 
+    public int getPriority()
+    {
+        return priority;
+    }
+
     public String priorityString()
     {
         return "" + size + " " + type;
@@ -55,9 +66,16 @@ public class Aircraft
         this.priority = priority;
     }
 
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
     public String toString()
     {
         StringBuilder sb = new StringBuilder("Aircraft[");
+        if (id != null)
+            sb.append("id=" + id + " ");
         if (name != null)
             sb.append("name=" + name + " ");
         sb.append("pri=" + priority + " ");
