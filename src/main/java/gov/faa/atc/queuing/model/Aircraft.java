@@ -1,5 +1,6 @@
 package gov.faa.atc.queuing.model;
 
+
 public class Aircraft
 {
     public enum Type
