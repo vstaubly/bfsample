@@ -1,6 +1,6 @@
 package gov.faa.atc.queuing.model;
 
-public class Aircraft implements Comparable<Aircraft>
+public class Aircraft
 {
     public enum Type
     {
@@ -41,37 +41,6 @@ public class Aircraft implements Comparable<Aircraft>
     public Size getSize()
     {
         return size;
-    }
-
-    /**
-     * Returns the comparative priority for dequeuing of this aircraft and another
-     */
-    public int compareTo(Aircraft other)
-    {
-        if (type != other.getType()) {
-            switch (type) {
-                case Emergency:
-                    return 1;
-                case VIP:
-                    if (other.getType() != Type.Emergency)
-                        return 1;
-                    else
-                        return -1;
-                case Passenger:
-                    if ((other.getType() != Type.Emergency) && (other.getType() != Type.VIP))
-                        return 1;
-                    else
-                        return -1;
-                default:
-                    return -1;
-            }
-        } else if (size != other.getSize()) {
-            if (size == Size.Large)
-                return 1;
-            else
-                return -1;
-        }
-        return 0;
     }
 
     public String priorityString()
